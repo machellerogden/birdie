@@ -134,12 +134,17 @@ function runMigrationsFromTo (db, f, t) {
       // Find migration file corresponding to number
       console.log(chalk.cyan(`Running migration ${p}`));
       validateMigration(mi);
-
+      function done(err) {
+        if (err) throw err;
+        arr.shift();
+        migrate(arr);
+      };
       try {
-        mi[method](db, function () {
-          arr.shift();
-          migrate(arr);
-        }, mongo);
+        if (mi[method].length === 2) {
+          mi[method](db, done);
+        } else if (mi[method].length === 3) {
+          mi[method](db, mongo, done);
+        }
       } catch (err) {
         if (err) {
           // Otherwise we get current and previous as the same!

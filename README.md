@@ -96,18 +96,16 @@ module.exports = {
     db.createCollection('fiddlesticks').then(function (collection) {
       console.log('Collection was created!');
       done();
-    }).catch(function (err) {
-      console.log(err);
-    });;
+    }).catch(done);
   },
-  down: function (db, done, mongo) {
+  down: function (db, mongo, done) {
     db.collection('fiddlesticks').find({ '_id': new mongo.ObjectId('5845e316b1d13b525517aae4') }).toArray()
       .then(function (res) {
           console.log(`The last words from the fiddlesticks collection: ${res}`);
           db.collection('fiddlesticks').drop(function (err, reply) {
             done();
           });
-      });
+      }).catch(done);
   }
 }
 ```
